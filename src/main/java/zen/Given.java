@@ -1,8 +1,7 @@
 package zen;
 
 import rjson.Rjson;
-import rjson.test.NullifyDateTransformer;
-
+import zen.rjson.NullifyDateTransformer;
 
 public class Given {
 	public static Given classUnderTestIs(Class<?> classUnderTest) {

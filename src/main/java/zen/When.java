@@ -13,10 +13,10 @@ public class When {
 	public Then methodIsCalledWith(Object... parameters) {
 		return this.isCalledWith(parameters);
 	}
-	
+
 	public Then isCalledWith(Object... parameters) {
-		if(parameters == null) {
-			parameters = new Object[] {null};
+		if (parameters == null) {
+			parameters = new Object[] { null };
 		}
 		recordParameters(parameters);
 		try {
@@ -36,11 +36,12 @@ public class When {
 			throw new AssertionError(e);
 		}
 	}
-	
+
 	private void recordParameters(Object[] parameters) {
-		if(parameters == null) return;
+		if (parameters == null)
+			return;
 		Rjson rjson = Rjson.newInstance().and(new NullifyDateTransformer()).andIgnoreModifiers();
-		for(Object parameter: parameters) {
+		for (Object parameter : parameters) {
 			inputParams.add(parameter);
 			inputParamJsons.add(rjson.toJson(parameter));
 		}
