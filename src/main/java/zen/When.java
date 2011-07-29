@@ -7,7 +7,7 @@ import java.util.List;
 
 import mirage.ReflectionUtils;
 import rjson.Rjson;
-import rjson.test.NullifyDateTransformer;
+import zen.rjson.NullifyDateTransformer;
 
 public class When {
 	public Then methodIsCalledWith(Object... parameters) {
