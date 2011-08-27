@@ -1,14 +1,13 @@
 package zen;
 
 import rjson.Rjson;
-import zen.rjson.NullifyDateTransformer;
+import rjson.utils.NullifyDateTransformer;
+import rjson.utils.RjsonUtil;
 
 public class Then {
 	public Then assertThatObjectUnderTestIsNotModified() {
-		Rjson rjson = Rjson.newInstance().with(new NullifyDateTransformer()).andIgnoreModifiers();
-		String objectUnderTestJsonAfterTestExecution = rjson.toJson(when.given().objectUnderTest());
-		if (!objectUnderTestJsonAfterTestExecution.equals(when.given().objectUnderTestJsonBeforeTestExecution()))
-			throw new AssertionError();
+		String objectUnderTestJsonAfterTestExecution = RjsonUtil.completeSerializer().toJson(when.given().objectUnderTest());
+		Assert.thatJsonEqualsLiterally(when.given().objectUnderTestJsonBeforeTestExecution(), objectUnderTestJsonAfterTestExecution);
 		return this;
 	}
 
@@ -21,7 +20,7 @@ public class Then {
 		for (int i = 0; i < when.inputParams().size(); i++) {
 			Object object = when.inputParams().get(i);
 			String afterExecutionJson = rjson.toJson(object);
-			assertEquals(afterExecutionJson, when.inputParamJsons().get(i));
+			Assert.thatJsonEqualsLiterally(afterExecutionJson, when.inputParamJsons().get(i));
 		}
 		return this;
 	}
@@ -34,13 +33,7 @@ public class Then {
 
 	public Then assertThatReturnValueIsSameAs(Object expectedObject) {
 		assertThatThereAreNoSideEffects();
-		assertEquals(expectedObject, returnObject);
-		return this;
-	}
-
-	public Then assertThatReturnJsonIsSameAsJsonFor(Object expectedObject) {
-		assertThatThereAreNoSideEffects();
-		assertJsonEquals(expectedObject, returnObject);
+		Assert.thatEquals(expectedObject, returnObject);
 		return this;
 	}
 
@@ -48,21 +41,6 @@ public class Then {
 		Then then = new Then();
 		then.when = when;
 		return then;
-	}
-
-	public static void assertJsonEquals(Object expectedObject, Object actualObject) {
-		Rjson rjson = Rjson.newInstance().with(new NullifyDateTransformer()).andIgnoreModifiers();
-		assertEquals(rjson.toJson(expectedObject), rjson.toJson(actualObject));
-	}
-
-	public static void assertEquals(Object expectedObject, Object actualObject) {
-		if (!expectedObject.equals(actualObject)) {
-			// String difference =
-			// StringUtils.difference(expectedObject.toString(),
-			// actualObject.toString());
-			AssertionError ae = new AssertionError("expected: <" + expectedObject + "> but was: <" + actualObject + ">");
-			throw ae;
-		}
 	}
 
 	private When when;
